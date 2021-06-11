@@ -8,6 +8,7 @@ import repository.interfaces.BillRepository;
 import repository.interfaces.CardRepository;
 import repository.interfaces.ClientRepository;
 import service.interfaces.AccountService;
+import service.interfaces.CardService;
 import service.interfaces.ClientService;
 
 import java.util.List;
@@ -16,15 +17,15 @@ public class ClientServiceImpl implements ClientService {
     private ClientRepository clientRepository;
     private AccountService accountService;
     private BillRepository billRepository;
-    private CardRepository cardRepository;
+    private CardService cardService;
 
 
     @Override
     public Client findById(Long id) {
         Client client = clientRepository.findById(id);
         Account account = accountService.findByClientId(client.getId());
-        List<Bill> listOfBill = billRepository.findAllByClientId(id);
-        Card card = cardRepository.findById(id);
+        List<Bill> listOfBill = billRepository.findAllByClientId(id);//это нужно заменить
+        Card card = cardService.findById(id);
         client.setAccount(account);
         client.setListOfBill(listOfBill);
         client.setCard(card);
@@ -37,7 +38,7 @@ public class ClientServiceImpl implements ClientService {
         listOfClient.forEach(client -> {
             client.setAccount(accountService.findByClientId(client.getId()));
             client.setListOfBill(billRepository.findAllByClientId(client.getId()));
-            client.setCard(cardRepository.findById(client.getId()));
+            client.setCard(cardService.findById(client.getId()));
         });
         return listOfClient;
     }

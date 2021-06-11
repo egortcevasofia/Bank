@@ -12,4 +12,8 @@ public interface AccountRepository {
     List<Account> findAll();
     void updateById(Long id, Account account);
     void deleteById(Long id);
+    Account findByClientId(Long id);
+    void createTable();
+    void dropTable();
+
 }

@@ -1,6 +1,6 @@
 package repository.impl;
 
-import entity.Status;
+import entity.AccountStatus;
 import exception.AccountNotFoundException;
 import repository.interfaces.AccountRepository;
 
@@ -14,11 +14,22 @@ import java.util.List;
 
 public class AccountRepositoryImpl implements AccountRepository {
     //mavenCentral -> postgres driver -> pom.xml -> <dependencies>...</dependencies>
-    private static final String INSERT_QUERY = "INSERT INTO ACCOUNT(firstName, lastName, status) VALUES (?, ?, ?)";
-    private static final String SELECT_QUERY = "SELECT a.id, a.firstName, a.lastName, a.status FROM ACCOUNT a WHERE a.id = ?";
+    private static final String INSERT_QUERY = "INSERT INTO ACCOUNT(first_name, last_name, account_status, client_id) VALUES (?, ?, ?, ?)";
+    private static final String SELECT_QUERY = "SELECT a.id, a.first_name, a.last_name, a.account_status, a.client_id FROM ACCOUNT a WHERE a.id = ?";
     private static final String SELECTALL_QUERY = "SELECT * FROM ACCOUNT";
-    private static final String UPDATE_QUERY = "UPDATE ACCOUNT SET firstname = ?, lastname = ?, status = ? WHERE id = ?";
-    private static final String DELETE_QUERY = "UPDATE ACCOUNT SET status = 'DELETED' WHERE id = ?";
+    private static final String UPDATE_QUERY = "UPDATE ACCOUNT SET first_name = ?, last_name = ?, account_status = ?, client_id = ? WHERE id = ?";
+    private static final String DELETE_QUERY = "UPDATE ACCOUNT SET account_status = 'DELETED' WHERE id = ?";
+    private static final String SELECT_BY_CLIENT_ID_QUERY = "SELECT a.id, a.first_name, a.last_name, a.account_status, a.client_id FROM ACCOUNT a WHERE a.client_id = ?";
+    private static final String TRUNCATE_TABLE_QUERY = "TRUNCATE account";
+    private static final String CREATE_TABLE_QUERY = "create table account(\n" +
+            "id bigserial not null primary key,\n" +
+            "first_name varchar(100) not null,\n" +
+            "last_name varchar(100) not null,\n" +
+            "account_status varchar(100) not null,\n" +
+            "client_id bigint,\n" +
+            "FOREIGN KEY (client_id) REFERENCES client(id)\n" +
+            ")";
+    private static final String DROP_TABLE_QUERY = "DROP TABLE IF EXISTS account";
 
     private static final String ACCOUNT_NOT_FOUND_MESSAGE = "Account with id %d not found";
 
@@ -26,6 +37,7 @@ public class AccountRepositoryImpl implements AccountRepository {
     private static final String DRIVER = "org.postgresql.Driver";
     private Connection connection;
     private PreparedStatement preparedStatement;
+
 
     static {
         try {
@@ -51,10 +63,11 @@ public class AccountRepositoryImpl implements AccountRepository {
             preparedStatement = connection.prepareStatement(INSERT_QUERY);
             preparedStatement.setString(1, account.getFirstName());
             preparedStatement.setString(2, account.getLastName());
-            preparedStatement.setString(3, account.getStatus().name());
+            preparedStatement.setString(3, account.getAccountStatus().name());
+            preparedStatement.setLong(4, account.getClientId());
             preparedStatement.execute();
 
-            //KeyHolder
+            //KeyHolder Bigserial
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -73,11 +86,12 @@ public class AccountRepositoryImpl implements AccountRepository {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()) {
-                Long accountId = resultSet.getLong(1);
+                Long AccountId = resultSet.getLong(1);
                 String firstName = resultSet.getString(2);
                 String lastName = resultSet.getString(3);
-                Status status = toStatus(resultSet.getString(4));
-                account = new Account(accountId, firstName, lastName, status);
+                AccountStatus status = toStatus(resultSet.getString(4));
+                Long clientId = resultSet.getLong(5);
+                account = new Account(AccountId, firstName, lastName, status, clientId);
             } else {
                 throw new AccountNotFoundException(String.format(ACCOUNT_NOT_FOUND_MESSAGE, id));
             }
@@ -98,11 +112,12 @@ public class AccountRepositoryImpl implements AccountRepository {
             preparedStatement = connection.prepareStatement(SELECTALL_QUERY);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                Long accountId = resultSet.getLong(1);
+                Long id = resultSet.getLong(1);
                 String firstName = resultSet.getString(2);
                 String lastName = resultSet.getString(3);
-                Status status = toStatus(resultSet.getString(4));
-                account = new Account(accountId, firstName, lastName, status);
+                AccountStatus status = toStatus(resultSet.getString(4));
+                Long clientId = resultSet.getLong(5);
+                account = new Account(id, firstName, lastName, status, clientId);
                 list.add(account);
             }
         } catch (SQLException throwables) {
@@ -120,11 +135,12 @@ public class AccountRepositoryImpl implements AccountRepository {
             preparedStatement = connection.prepareStatement(UPDATE_QUERY);
             preparedStatement.setString(1, account.getFirstName());
             preparedStatement.setString(2, account.getLastName());
-            preparedStatement.setString(3, account.getStatus().name());
-            preparedStatement.setLong(4, id);
+            preparedStatement.setString(3, account.getAccountStatus().name());
+            preparedStatement.setLong(4, account.getClientId());
+            preparedStatement.setLong(5, id);
             preparedStatement.executeUpdate();
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            throwables.printStackTrace();// изменить на мессадж
         }finally {
             JdbcUtils.close(connection);
         }
@@ -139,18 +155,67 @@ public class AccountRepositoryImpl implements AccountRepository {
             preparedStatement.setLong(1, id);
             preparedStatement.executeUpdate();
 
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
-    private Status toStatus(String status) {
+    @Override
+    public Account findByClientId(Long id) {
+        getConnection();
+        Account account = null;
+        try {
+            preparedStatement = connection.prepareStatement(SELECT_BY_CLIENT_ID_QUERY);
+            preparedStatement.setLong(1, id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                Long AccountId = resultSet.getLong(1);
+                String firstName = resultSet.getString(2);
+                String lastName = resultSet.getString(3);
+                AccountStatus status = toStatus(resultSet.getString(4));
+                Long clientId = resultSet.getLong(5);
+                account = new Account(AccountId, firstName, lastName, status, clientId);
+            } else {
+                throw new AccountNotFoundException(String.format(ACCOUNT_NOT_FOUND_MESSAGE, id));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            JdbcUtils.close(connection);
+        }
+        return account;
+    }
+
+
+    @Override
+    public void createTable(){
+        getConnection();
+        try {
+            preparedStatement = connection.prepareStatement(CREATE_TABLE_QUERY);
+            preparedStatement.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    @Override
+    public void dropTable(){
+        getConnection();
+        try {
+            preparedStatement = connection.prepareStatement(DROP_TABLE_QUERY);
+            preparedStatement.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private AccountStatus toStatus(String status) {
         if (status.equals("ACTIVE")) {
-            return Status.ACTIVE;
+            return AccountStatus.ACTIVE;
         } else if (status.equals("BLOCKED")) {
-            return Status.BLOCKED;
+            return AccountStatus.BLOCKED;
         } else {
-            return Status.DELETED;
+            return AccountStatus.DELETED;
         }
     }
 }

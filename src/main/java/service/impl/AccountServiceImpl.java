@@ -19,7 +19,7 @@ public class AccountServiceImpl implements AccountService {
     public Account findById(Long id) {
         Account account = accountRepository.findById(id);
         if (account == null) {
-            throw new AccountNotFoundException(String.format(ACCOUNT_NOT_FOUND_MESSAGE, id));
+            throw new AccountNotFoundException(String.format(ACCOUNT_NOT_FOUND_MESSAGE, id));//todo так верно?
         } else {
             return account;
         }

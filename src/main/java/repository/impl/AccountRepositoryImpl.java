@@ -79,7 +79,7 @@ public class AccountRepositoryImpl implements AccountRepository {
     }
 
     @Override
-    public Account findById(Long id) {//todo подумать нужен ли option
+    public Account findById(Long id) {//todo подумать нужен ли option иначе возвращаем null
 //        Account account = new Account();
         getConnection();
         try {

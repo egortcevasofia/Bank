@@ -51,18 +51,21 @@ public class ClientRepositoryImpl implements ClientRepository {
     public Client save(Client client) {
         getConnection();
         try {
-            preparedStatement = connection.prepareStatement(INSERT_QUERY);
+            preparedStatement = connection.prepareStatement(INSERT_QUERY, Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setString(1, client.getFirstName());
             preparedStatement.setString(2, client.getLastName());
             preparedStatement.setInt(3, client.getAge());
             preparedStatement.setDate(4, Date.valueOf(client.getDateOfBirth()));
             preparedStatement.execute();
+            ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                client.setId(generatedKeys.getLong(1));
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             JdbcUtils.close(connection);
         }
-
         return client;
     }
 
@@ -136,25 +139,6 @@ public class ClientRepositoryImpl implements ClientRepository {
         } finally {
             JdbcUtils.close(connection);
         }
-    }
-
-
-    @Override
-    public Card payByCard(Long cardId, Double payment) {
-
-        return null;
-    }
-
-    @Override
-    public Card topUpCard(Long cardId, Double payment) {
-
-        return null;
-    }
-
-    @Override
-    public List<Bill> listOfBill(Long id) {
-
-        return null;
     }
 
     @Override

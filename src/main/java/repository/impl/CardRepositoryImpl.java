@@ -50,11 +50,15 @@ public class CardRepositoryImpl implements CardRepository {
     public Card save(Card card) {
         getConnection();
         try {
-            preparedStatement = connection.prepareStatement(INSERT_QUERY);
+            preparedStatement = connection.prepareStatement(INSERT_QUERY, Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setDouble(1, card.getBalance());
             preparedStatement.setString(2, card.getTypeCard().name());
             preparedStatement.setLong(3, card.getClientId());
             preparedStatement.execute();
+            ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                card.setId(generatedKeys.getLong(1));
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }finally {
@@ -88,25 +92,25 @@ public class CardRepositoryImpl implements CardRepository {
     }
 
     @Override
-    public Card changeBalance(Long id, Double amount) {
+    public Card changeBalance(Long cardId, Double amount) {
         Card card = null;
         getConnection();
         try {
             preparedStatement = connection.prepareStatement(SELECT_QUERY);
-            preparedStatement.setLong(1, id);
+            preparedStatement.setLong(1, cardId);
             ResultSet resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()) {
-                Long cardId = resultSet.getLong(1);
+                Long id = resultSet.getLong(1);
                 Double balance = resultSet.getDouble(2);
                 TypeCard typeCard = toTypeCard(resultSet.getString(3));
                 Long clientId = resultSet.getLong(4);
                 Double changedBalance = balance + (amount);
-                card = new Card(cardId, changedBalance, typeCard, clientId);
+                card = new Card(id, changedBalance, typeCard, clientId);
 
                 preparedStatement = connection.prepareStatement(UPDATE_QUERY);
                 preparedStatement.setDouble(1, card.getBalance());
-                preparedStatement.setLong(2, cardId);
+                preparedStatement.setLong(2, id);
                 preparedStatement.execute();
 
 

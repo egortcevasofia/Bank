@@ -6,11 +6,11 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface BankService {
-    Client createClient(String firstName, String lastName, Integer age, LocalDate dateOfBirth);
-    Account creatAccount(String firstName, String lastName, AccountStatus accountStatus, Long clientId);
-    Card createCard(Double balance, TypeCard typeCard, Long clientId);
+    Client createClient(Client client);
+    Account creatAccount(Account account);
+    Card createCard(Card card);
     List<Client> findAllClients();
-    Bill createBill(Double payment, Long clientId);
+    Bill createBill(Bill bill);
     Card debitByClientId(Long id, Double payment);//снятие с  баланса клиента суммы (по id клиента)
 
 

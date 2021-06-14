@@ -52,13 +52,15 @@ public class BillRepositoryImpl  implements BillRepository {
     public Bill save(Bill bill) {
         getConnection();
         try {
-            preparedStatement = connection.prepareStatement(INSERT_QUERY);
+            preparedStatement = connection.prepareStatement(INSERT_QUERY, Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setTimestamp(1, Timestamp.valueOf(bill.getLocalDateTime()));
             preparedStatement.setDouble(2, bill.getPayment());
             preparedStatement.setLong(3, bill.getClientId());
             preparedStatement.execute();
-
-            //KeyHolder Bigserial
+            ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                bill.setId(generatedKeys.getLong(1));
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {

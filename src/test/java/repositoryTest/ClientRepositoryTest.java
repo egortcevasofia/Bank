@@ -19,16 +19,16 @@ public class ClientRepositoryTest {
     public void setBeforeEach(){
         clientRepository.createTable();
         clientRepository.save(new Client("Ivan", "Ivanov", 25, LocalDate.of(1993, 5, 6)));
-        clientRepository.save(new Client("Ivan", "Ivanov", 25, LocalDate.of(1993, 5, 6)));
-        clientRepository.save(new Client("Ivan", "Ivanov", 25, LocalDate.of(1993, 5, 6)));
+        clientRepository.save(new Client("Sidor", "Sidorov", 25, LocalDate.of(1993, 5, 6)));
+        clientRepository.save(new Client("Petr", "Petrov", 25, LocalDate.of(1993, 5, 6)));
     }
 
     @DisplayName("Save client in the BD and check it")
     @Test
     public void test_saveClient() {
-        Client client = new Client("Petr", "Petrov", 20, LocalDate.of(1992, 6, 7));
+        Client client = new Client("Vasili", "Vasin", 20, LocalDate.of(1992, 6, 7));
         Client savedClient = clientRepository.save(client);
-        //assertEquals(savedClient.getId(), 4L);
+        assertEquals(savedClient.getId(), 4L);
         assertEquals(savedClient.getFirstName(), client.getFirstName());
         assertEquals(savedClient.getLastName(), client.getLastName());
         assertEquals(savedClient.getAge(), client.getAge());

@@ -31,7 +31,7 @@ public class CardRepositoryTest {
         Card card = new Card(100.90, TypeCard.STUDENT, 4L);
         Card savedCard = cardRepository.save(card);
 
-        //assertEquals(savedClient.getId(), 4L);
+        assertEquals(savedCard.getId(), 4L);
         assertEquals(savedCard.getBalance(), card.getBalance());
         assertEquals(savedCard.getTypeCard(), card.getTypeCard());
         assertEquals(savedCard.getClientId(), card.getClientId());

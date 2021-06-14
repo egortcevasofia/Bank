@@ -9,6 +9,6 @@ public interface AccountService {
     List<Account> findAll();
     Account save(Account account);
     void update(Long id, Account account);
-    void delite(Long id);
+    void delete(Long id);
     Account findByClientId(Long id);
 }

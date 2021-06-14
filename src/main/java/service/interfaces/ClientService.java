@@ -11,9 +11,9 @@ public interface ClientService {
     List<Client> findAll();
     Client save(Client client);
     void update(Long id, Client client);
-    void delite(Long id);
+    void delete(Long id);
     Boolean pay(Long clientId, Long billId);
-    Boolean topUp(Long clientId, int sum);
+    Boolean topUp(Long clientId, Double sum);
     List<Bill> getListOfBill(Long clientId);
 
 }

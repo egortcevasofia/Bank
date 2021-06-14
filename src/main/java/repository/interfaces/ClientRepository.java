@@ -12,9 +12,6 @@ public interface ClientRepository {
     Client findById(Long id);
     List<Client> findAll();
     void updateById(Long id, Client client);
-    Card payByCard(Long cardId, Double payment);
-    Card topUpCard(Long cardId, Double payment);
-    List<Bill> listOfBill(Long id);
     void createTable();
     void dropTable();
 

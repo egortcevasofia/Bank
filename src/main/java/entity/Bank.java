@@ -1,32 +1,39 @@
 package entity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Bank {
-    private Long BankId;
+    private Long bankId;
     private String name;
     private List<Client> listOfClient;
 
-    public Bank(Long bankId, String name, List<Client> listOfClient) {
-        BankId = bankId;
+    public Bank(Long bankId, String name) {
+        this.bankId = bankId;
         this.name = name;
-        this.listOfClient = listOfClient;
     }
 
-    public Bank(String name, List<Client> listOfClient) {
+    public Bank(String name) {
         this.name = name;
-        this.listOfClient = listOfClient;
     }
 
     public Bank() {
     }
 
+    public void addClient(Client client){
+        if (listOfClient == null){
+            listOfClient = new ArrayList<>();
+        }
+
+        listOfClient.add(client);
+    }
+
     public Long getBankId() {
-        return BankId;
+        return bankId;
     }
 
     public void setBankId(Long bankId) {
-        BankId = bankId;
+        this.bankId = bankId;
     }
 
     public String getName() {

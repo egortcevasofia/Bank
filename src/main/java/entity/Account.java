@@ -2,22 +2,22 @@ package entity;
 
 public class Account {
     private Long id;
-    private String firstName;
-    private String lastName;
+    private String login;// поправить
+    private String password;
     private AccountStatus accountStatus;
     private Long clientId;
 
-    public Account(Long id, String firstName, String lastName, AccountStatus accountStatus, Long clientId) {
+    public Account(Long id, String login, String password, AccountStatus accountStatus, Long clientId) {
         this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
+        this.login = login;
+        this.password = password;
         this.accountStatus = accountStatus;
         this.clientId = clientId;
     }
 
-    public Account(String firstName, String lastName, AccountStatus accountStatus, Long clientId) {
-        this.firstName = firstName;
-        this.lastName = lastName;
+    public Account(String login, String password, AccountStatus accountStatus, Long clientId) {
+        this.login = login;
+        this.password = password;
         this.accountStatus = accountStatus;
         this.clientId = clientId;
     }
@@ -29,13 +29,13 @@ public class Account {
 
     public void setId(Long id) { this.id = id; }
 
-    public String getFirstName() { return firstName; }
+    public String getLogin() { return login; }
 
-    public void setFirstName(String firstName) { this.firstName = firstName; }
+    public void setLogin(String login) { this.login = login; }
 
-    public String getLastName() { return lastName; }
+    public String getPassword() { return password; }
 
-    public void setLastName(String lastName) { this.lastName = lastName; }
+    public void setPassword(String password) { this.password = password; }
 
     public AccountStatus getAccountStatus() { return accountStatus; }
 

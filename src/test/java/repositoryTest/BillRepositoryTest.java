@@ -31,7 +31,7 @@ public class BillRepositoryTest {
         Bill bill = new Bill(LocalDateTime.of(1999, 5, 5, 9, 9, 9), 99.99, 4L);
         Bill savedBill = billRepository.save(bill);
 
-        //assertEquals(savedClient.getId(), 4L);
+        assertEquals(savedBill.getId(), 4L);
         assertEquals(savedBill.getLocalDateTime(), bill.getLocalDateTime());
         assertEquals(savedBill.getPayment(), bill.getPayment());
         assertEquals(savedBill.getClientId(), bill.getClientId());

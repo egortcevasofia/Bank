@@ -17,19 +17,19 @@ public class AccountRepositoryTest {
     @BeforeEach
     public void setBeforeEach() {
         accountRepository.createTable();
-        accountRepository.save(new Account("Ivan", "Ivanov", AccountStatus.ACTIVE, 1L));
-        accountRepository.save(new Account("Sidor", "Sidorov", AccountStatus.ACTIVE, 2L));
-        accountRepository.save(new Account("Petr", "Petrov", AccountStatus.ACTIVE, 3L));
+        accountRepository.save(new Account("Ivanov", "qwertI", AccountStatus.ACTIVE, 1L));
+        accountRepository.save(new Account("Sidorov", "qwertyS", AccountStatus.ACTIVE, 2L));
+        accountRepository.save(new Account("Petrov", "qwertyP", AccountStatus.ACTIVE, 3L));
     }
 
     @DisplayName("Save account in the BD and check it")
     @Test
     public void test_saveAccount() {
-        Account account = new Account("Vasiya", "Vasyin", AccountStatus.ACTIVE, 4L);
+        Account account = new Account("Vasyin", "qwertyV", AccountStatus.ACTIVE, 4L);
         Account savedAccount = accountRepository.save(account);
-        //assertEquals(savedAccount.getId(), 4);
-        assertEquals(savedAccount.getFirstName(), account.getFirstName());
-        assertEquals(savedAccount.getLastName(), account.getLastName());
+        assertEquals(savedAccount.getId(), 4);
+        assertEquals(savedAccount.getLogin(), account.getLogin());
+        assertEquals(savedAccount.getPassword(), account.getPassword());
         assertEquals(savedAccount.getAccountStatus(), account.getAccountStatus());
         assertEquals(savedAccount.getClientId(), account.getClientId());
     }
@@ -37,13 +37,13 @@ public class AccountRepositoryTest {
     @DisplayName("Get account by id from the BD")
     @Test
     public void test_findAccountById() {
-        Account account = new Account("Vasiya", "Vasyin", AccountStatus.ACTIVE, 4L);
+        Account account = new Account("Vasyin", "qwertyV", AccountStatus.ACTIVE, 4L);
         accountRepository.save(account);
         Account savedAccount = accountRepository.findById(4L);
         assertAll(() -> {
             assertEquals(Optional.of(savedAccount.getId()).get(), 4L);
-            assertEquals(savedAccount.getFirstName(), account.getFirstName());
-            assertEquals(savedAccount.getLastName(), account.getLastName());
+            assertEquals(savedAccount.getLogin(), account.getLogin());
+            assertEquals(savedAccount.getPassword(), account.getPassword());
             assertEquals(savedAccount.getAccountStatus(), account.getAccountStatus());
             assertEquals(Optional.of(savedAccount.getClientId()).get(), 4L);
         });
@@ -60,14 +60,14 @@ public class AccountRepositoryTest {
     @Test
     public void test_updateById() {
         Long id = 3L;
-        Account account = new Account("Vasiya", "Vasyin", AccountStatus.ACTIVE, 4L);
+        Account account = new Account("Vasyin", "qwertyV", AccountStatus.ACTIVE, 4L);
         accountRepository.updateById(id, account);
         Account updatedAccount = accountRepository.findById(id);
         assertNotNull(updatedAccount);
         assertAll(() -> {
             assertEquals(Optional.of(updatedAccount.getId()).get(), 3L);
-            assertEquals(updatedAccount.getFirstName(), account.getFirstName());
-            assertEquals(updatedAccount.getLastName(), account.getLastName());
+            assertEquals(updatedAccount.getLogin(), account.getLogin());
+            assertEquals(updatedAccount.getPassword(), account.getPassword());
             assertEquals(updatedAccount.getAccountStatus(), account.getAccountStatus());
             assertEquals(Optional.of(updatedAccount.getClientId()).get(), 4L);
         });
@@ -85,14 +85,14 @@ public class AccountRepositoryTest {
     @DisplayName("Find account  from BD by ClientId")
     @Test
     public void test_findByClientId() {
-        Account account = new Account("Vasiya", "Vasyin", AccountStatus.ACTIVE, 4L);
+        Account account = new Account("Vasyin", "qwertyV", AccountStatus.ACTIVE, 4L);
         accountRepository.save(account);
         Long id = 4L;
         Account savedAccount = accountRepository.findByClientId(id);
         assertAll(() -> {
             assertEquals(Optional.of(savedAccount.getId()).get(), 4L);
-            assertEquals(savedAccount.getFirstName(), account.getFirstName());
-            assertEquals(savedAccount.getLastName(), account.getLastName());
+            assertEquals(savedAccount.getLogin(), account.getLogin());
+            assertEquals(savedAccount.getPassword(), account.getPassword());
             assertEquals(savedAccount.getAccountStatus(), account.getAccountStatus());
             assertEquals(Optional.of(savedAccount.getClientId()).get(), 4L);
         });

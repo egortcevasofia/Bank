@@ -18,8 +18,8 @@ private CardRepository cardRepository;
     }
 
     @Override
-    public Card changeBalance(Long id, Double amount) {
-        return cardRepository.changeBalance(id, amount);
+    public Card changeBalance(Long cardId, Double amount) {
+        return cardRepository.changeBalance(cardId, amount);
     }
 
     @Override

@@ -1,7 +1,6 @@
 package repository.impl;
 
 import entity.AccountStatus;
-import exception.AccountNotFoundException;
 import repository.interfaces.AccountRepository;
 
 import entity.Account;
@@ -10,6 +9,7 @@ import utils.JdbcUtils;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 public class AccountRepositoryImpl implements AccountRepository {
@@ -79,8 +79,7 @@ public class AccountRepositoryImpl implements AccountRepository {
     }
 
     @Override
-    public Account findById(Long id) {//todo подумать нужен ли option иначе возвращаем null
-//        Account account = new Account();
+    public Optional<Account> findById(Long id) {
         getConnection();
         try {
             preparedStatement = connection.prepareStatement(SELECT_QUERY);
@@ -93,14 +92,14 @@ public class AccountRepositoryImpl implements AccountRepository {
                 String password = resultSet.getString(3);
                 AccountStatus status = toStatus(resultSet.getString(4));
                 Long clientId = resultSet.getLong(5);
-                return new Account(AccountId, login, password, status, clientId);
+                return Optional.of(new Account(AccountId, login, password, status, clientId));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }finally {
             JdbcUtils.close(connection);
         }
-        return null;
+        return Optional.empty();
     }
 
     @Override
@@ -160,7 +159,7 @@ public class AccountRepositoryImpl implements AccountRepository {
     }
 
     @Override
-    public Account findByClientId(Long id) {
+    public Optional<Account> findByClientId(Long id) {
         getConnection();
         try {
             preparedStatement = connection.prepareStatement(SELECT_BY_CLIENT_ID_QUERY);
@@ -173,14 +172,14 @@ public class AccountRepositoryImpl implements AccountRepository {
                 String password = resultSet.getString(3);
                 AccountStatus status = toStatus(resultSet.getString(4));
                 Long clientId = resultSet.getLong(5);
-                return new Account(AccountId, login, password, status, clientId);
+                return Optional.of(new Account(AccountId, login, password, status, clientId));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }finally {
             JdbcUtils.close(connection);
         }
-        return null;
+        return Optional.empty();
     }
 
 

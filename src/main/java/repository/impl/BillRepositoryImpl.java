@@ -11,6 +11,7 @@ import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class BillRepositoryImpl  implements BillRepository {
     private static final String INSERT_QUERY = "INSERT INTO BILL(date_of_creation, payment, client_id) VALUES (?, ?, ?)";
@@ -70,8 +71,7 @@ public class BillRepositoryImpl  implements BillRepository {
     }
 
     @Override
-    public Bill findById(Long id) {
-        Bill bill = new Bill();
+    public Optional<Bill> findById(Long id) {
         getConnection();
         try {
             preparedStatement = connection.prepareStatement(SELECT_QUERY);
@@ -83,23 +83,20 @@ public class BillRepositoryImpl  implements BillRepository {
                 LocalDateTime dateOfCreation = resultSet.getTimestamp(2).toLocalDateTime();
                 Double payment = resultSet.getDouble(3);
                 Long clientId = resultSet.getLong(4);
-                bill = new Bill(billId, dateOfCreation, payment, clientId);
-            } else {
-                throw new AccountNotFoundException(String.format(ACCOUNT_NOT_FOUND_MESSAGE, id));
+                return Optional.of(new Bill(billId, dateOfCreation, payment, clientId));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }finally {
             JdbcUtils.close(connection);
         }
-        return bill;
+        return Optional.empty();
     }
 
 
     @Override
     public List<Bill> findAllByClientId(Long id) {
         getConnection();
-        Bill bill = null;
         List<Bill> list = new ArrayList<Bill>();
         try {
             preparedStatement = connection.prepareStatement(SELECT_ALL_QUERY);
@@ -110,7 +107,7 @@ public class BillRepositoryImpl  implements BillRepository {
                 LocalDateTime dateOfCreation = resultSet.getTimestamp(2).toLocalDateTime();
                 Double payment = resultSet.getDouble(3);
                 Long clientId = resultSet.getLong(4);
-                bill = new Bill(billId, dateOfCreation, payment, clientId);
+                Bill bill = new Bill(billId, dateOfCreation, payment, clientId);
                 list.add(bill);
             }
         } catch (SQLException e) {

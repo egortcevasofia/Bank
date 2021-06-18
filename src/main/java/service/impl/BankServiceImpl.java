@@ -8,8 +8,6 @@ import service.interfaces.BankService;
 import service.interfaces.CardService;
 import service.interfaces.ClientService;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 public class BankServiceImpl implements BankService {
@@ -47,6 +45,6 @@ public class BankServiceImpl implements BankService {
 
     @Override
     public Card debitByClientId(Long id, Double payment) {
-        return cardService.changeBalance(cardService.getCardIdBYClientId(id), payment);
+        return cardService.changeBalance(cardService.getCardByClientId(id).getId(), payment);
     }
 }

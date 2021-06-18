@@ -9,13 +9,14 @@ import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class ClientRepositoryImpl implements ClientRepository {
     private static final String INSERT_QUERY = "INSERT INTO CLIENT(first_name, last_name, age, date_of_birth) VALUES (?, ?, ?, ?)";
     private static final String SELECT_QUERY = "SELECT c.id, c.first_name, c.last_name, c.age, c.date_of_birth FROM CLIENT c WHERE c.id = ?";
     private static final String SELECT_ALL_QUERY = "SELECT * FROM CLIENT";
     private static final String UPDATE_QUERY = "UPDATE CLIENT SET first_name = ?, last_name = ?, age = ?, date_of_birth = ? WHERE id = ?";
-    private static final String CLIENT_NOT_FOUND_MESSAGE = "Client with id %d not found";
+    private static final String SELECT_ALL_BY_NAME_QUERY = "SELECT c.id, c.first_name, c.last_name, c.age, c.date_of_birth FROM CLIENT c WHERE c.first_name = ? and c.last_name = ? and c.date_of_birth = ?";
     private static final String CREATE_TABLE_QUERY = "create table client(\n" +
             "id bigserial not null primary key,\n" +
             "first_name varchar(100) not null,\n" +
@@ -70,8 +71,7 @@ public class ClientRepositoryImpl implements ClientRepository {
     }
 
     @Override
-    public Client findById(Long id) {
-        Client client = null;
+    public Optional<Client> findById(Long id) {
         getConnection();
         try {
             preparedStatement = connection.prepareStatement(SELECT_QUERY);
@@ -84,23 +84,19 @@ public class ClientRepositoryImpl implements ClientRepository {
                 String lastName = resultSet.getString(3);
                 Integer age = resultSet.getInt(4);
                 LocalDate dateOfBirth = resultSet.getDate(5).toLocalDate();
-
-                client = new Client(clientId, firstName, lastName, age, dateOfBirth);
-            } else {
-                throw new AccountNotFoundException(String.format(CLIENT_NOT_FOUND_MESSAGE, id));
+                return Optional.of(new Client(clientId, firstName, lastName, age, dateOfBirth));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             JdbcUtils.close(connection);
         }
-        return client;
+        return Optional.empty();
     }
 
     @Override
     public List<Client> findAll() {
         getConnection();
-        Client client = null;
         List<Client> list = new ArrayList<Client>();
         try {
             preparedStatement = connection.prepareStatement(SELECT_ALL_QUERY);
@@ -112,7 +108,7 @@ public class ClientRepositoryImpl implements ClientRepository {
                 Integer age = resultSet.getInt(4);
                 LocalDate dateOfBirth = resultSet.getDate(5).toLocalDate();
 
-                client = new Client(clientId, firstName, lastName, age, dateOfBirth);
+                Client client = new Client(clientId, firstName, lastName, age, dateOfBirth);
                 list.add(client);
             }
         } catch (SQLException e) {
@@ -139,6 +135,29 @@ public class ClientRepositoryImpl implements ClientRepository {
         } finally {
             JdbcUtils.close(connection);
         }
+    }
+
+    @Override
+    public Optional<Client> findByName(String firstName, String lastName, LocalDate dateOfBirth) {
+        getConnection();
+        try {
+            preparedStatement = connection.prepareStatement(SELECT_ALL_BY_NAME_QUERY);
+            preparedStatement.setString(1, firstName);
+            preparedStatement.setString(2, lastName);
+            preparedStatement.setDate(3, Date.valueOf(dateOfBirth));
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                Long clientId = resultSet.getLong(1);
+                Integer age = resultSet.getInt(4);
+                return Optional.of(new Client(clientId, firstName, lastName, age, dateOfBirth));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            JdbcUtils.close(connection);
+        }
+        return Optional.empty();
     }
 
     @Override

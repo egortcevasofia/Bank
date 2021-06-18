@@ -20,7 +20,7 @@ public class BillRepositoryTest {
     @BeforeEach
     public void setBeforeEach(){
         billRepository.createTable();
-        billRepository.save(new Bill(LocalDateTime.of(1999, 5, 5, 9, 9, 9), 99.99, 1L));
+        billRepository.save(new Bill(LocalDateTime.of(1999, 5, 5, 9, 9, 9), 10000.99, 1L));
         billRepository.save(new Bill(LocalDateTime.of(1999, 5, 5, 9, 9, 9), 99.99, 3L));
         billRepository.save(new Bill(LocalDateTime.of(1999, 5, 5, 9, 9, 9), 99.99, 3L));
     }
@@ -42,7 +42,7 @@ public class BillRepositoryTest {
     public void test_findBillById() {
         Bill bill = new Bill(LocalDateTime.of(1999, 5, 5, 9, 9, 9), 99.99, 4L);
         billRepository.save(bill);
-        Bill savedBill = billRepository.findById(4L);
+        Bill savedBill = billRepository.findById(4L).get();
         assertEquals(savedBill.getId(), 4L);
         assertEquals(savedBill.getLocalDateTime(), bill.getLocalDateTime());
         assertEquals(savedBill.getPayment(), bill.getPayment());
@@ -62,7 +62,7 @@ public class BillRepositoryTest {
     }
 
 
-    @AfterEach
+    //@AfterEach
     public void cleanAfterTest() {
         billRepository.dropTable();
     }

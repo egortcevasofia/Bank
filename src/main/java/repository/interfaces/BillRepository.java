@@ -1,13 +1,13 @@
 package repository.interfaces;
 
 import entity.Bill;
-import entity.Card;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface BillRepository {
     Bill save(Bill bill);
-    Bill findById(Long id);
+    Optional<Bill> findById(Long id);
     List<Bill> findAllByClientId(Long id);
     void createTable();
     void dropTable();

@@ -2,7 +2,7 @@ package serviceTest;
 
 import entity.Account;
 import entity.AccountStatus;
-import exception.AccountAlreadyExists;
+import exception.AccountExistsException;
 import exception.AccountNotFoundException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,36 +28,35 @@ public class AccountServiceTest {
         accountService.save(new Account("Petrov", "qwertyP", AccountStatus.ACTIVE, 3L));
     }
 
-    @DisplayName("Assert exception when account not exist")
+    @DisplayName("Find. Assert exception when account not exist")
     @Test
     public void test_findAccountById() {
         assertThrows(AccountNotFoundException.class, () -> accountService.findById(4L) );
     }
 
 
-    @DisplayName("Assert exception when account already exist")
+    @DisplayName("Save. Assert exception when account already exist")
     @Test
     public void test_saveAccount() {
-        assertThrows(AccountAlreadyExists.class, () -> accountService.save(new Account("Ivan", "qwertI", AccountStatus.ACTIVE, 1L)) );
+        assertThrows(AccountExistsException.class, () -> accountService.save(new Account("Ivan", "qwertI", AccountStatus.ACTIVE, 1L)) );
     }
 
-    @DisplayName("Assert exception when account not exist")
+    @DisplayName("Update. Assert exception when account not exist")
     @Test
-    public void test_updateById() {
+    public void test_updateAccountById() {
         assertThrows(AccountNotFoundException.class, () -> accountService.update(4L, new Account("Ivan", "qwertI", AccountStatus.ACTIVE, 1L)) );
     }
 
-    @DisplayName("Assert exception when account not exist")
+    @DisplayName("Delete. Assert exception when account not exist")
     @Test
-    public void test_deleteById() {
+    public void test_deleteAccountById() {
         assertThrows(AccountNotFoundException.class, () -> accountService.delete(4L));
     }
 
-    @DisplayName("Assert exception when account not exist")
+    @DisplayName("Find by clientId. Assert exception when account not exist")
     @Test
-    public void test_findByClientId() {
+    public void test_findAccountByClientId() {
         assertThrows(AccountNotFoundException.class, () -> accountService.findByClientId(4L));
-
     }
 
     @AfterEach

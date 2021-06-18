@@ -6,5 +6,5 @@ public interface CardService {
     Card save(Card card);
     Card findById(Long id);
     Card changeBalance(Long cardId, Double amount);
-    Long getCardIdBYClientId(Long id);
+    Card getCardByClientId(Long id);
 }

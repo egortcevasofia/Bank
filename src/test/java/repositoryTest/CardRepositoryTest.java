@@ -42,7 +42,7 @@ public class CardRepositoryTest {
     public void test_findCardById() {
         Card card = new Card(100.90, TypeCard.STUDENT, 4L);
         cardRepository.save(card);
-        Card savedCard = cardRepository.findById(4L);
+        Card savedCard = cardRepository.findById(4L).get();
         assertEquals(savedCard.getId(), 4L);
         assertEquals(savedCard.getBalance(), card.getBalance());
         assertEquals(savedCard.getTypeCard(), card.getTypeCard());
@@ -57,7 +57,7 @@ public class CardRepositoryTest {
         Double amountPositive = 50.50;
 
         cardRepository.changeBalance(id, amountPositive);
-        Card updatedCard = cardRepository.findById(id);
+        Card updatedCard = cardRepository.findById(id).get();
         assertEquals(updatedCard.getBalance(), 151.40);
     }
 
@@ -68,11 +68,11 @@ public class CardRepositoryTest {
         Double amountNegative = -50.50;
 
         cardRepository.changeBalance(id, amountNegative);
-        Card updatedCard = cardRepository.findById(id);
+        Card updatedCard = cardRepository.findById(id).get();
         assertEquals(updatedCard.getBalance(), 50.40);
     }
 
-    @AfterEach
+    //@AfterEach
     public void cleanAfterTest() {
         cardRepository.dropTable();
     }

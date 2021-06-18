@@ -38,9 +38,9 @@ public class ClientRepositoryTest {
     @DisplayName("Get client by id from the BD")
     @Test
     public void test_getClientById() {
-        Client client = new Client("Petr", "Petrov", 20, LocalDate.of(1992, 6, 7));
+        Client client = new Client("Petr", "Petrov", 20, LocalDate.of(1982, 6, 7));
         clientRepository.save(client);
-        Client savedClient = clientRepository.findById(4L);
+        Client savedClient = clientRepository.findById(4L).get();
         assertEquals(savedClient.getId(), 4L);
         assertEquals(savedClient.getFirstName(), client.getFirstName());
         assertEquals(savedClient.getLastName(), client.getLastName());
@@ -58,15 +58,30 @@ public class ClientRepositoryTest {
     @Test
     public void test_updateById() {
         Long id = 3L;
-        Client client = new Client("Petr", "Petrov", 20, LocalDate.of(1992, 6, 7));
+        Client client = new Client("Vasili", "Vasin", 20, LocalDate.of(1962, 6, 7));
         clientRepository.updateById(id, client);
-        Client updatedClient = clientRepository.findById(id);
+        Client updatedClient = clientRepository.findById(id).get();
         assertEquals(updatedClient.getId(), 3L);
         assertEquals(updatedClient.getFirstName(), client.getFirstName());
         assertEquals(updatedClient.getLastName(), client.getLastName());
         assertEquals(updatedClient.getAge(), client.getAge());
         assertEquals(updatedClient.getDateOfBirth(), client.getDateOfBirth());
     }
+
+    @DisplayName("Get client by name from the BD")
+    @Test
+    public void test_getClientByName() {
+        Client client = new Client("Petr", "Petrov", 20, LocalDate.of(1992, 6, 7));
+        clientRepository.save(client);
+        Client savedClient = clientRepository.findByName("Petr", "Petrov", LocalDate.of(1992, 6, 7)).get();
+        assertEquals(savedClient.getId(), 4L);
+        assertEquals(savedClient.getFirstName(), client.getFirstName());
+        assertEquals(savedClient.getLastName(), client.getLastName());
+        assertEquals(savedClient.getAge(), client.getAge());
+        assertEquals(savedClient.getDateOfBirth(), client.getDateOfBirth());
+    }
+
+
 
     @AfterEach
     public void cleanAfterTest() {

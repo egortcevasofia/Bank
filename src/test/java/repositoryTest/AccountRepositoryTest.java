@@ -39,7 +39,7 @@ public class AccountRepositoryTest {
     public void test_findAccountById() {
         Account account = new Account("Vasyin", "qwertyV", AccountStatus.ACTIVE, 4L);
         accountRepository.save(account);
-        Account savedAccount = accountRepository.findById(4L);
+        Account savedAccount = accountRepository.findById(4L).get();
         assertAll(() -> {
             assertEquals(Optional.of(savedAccount.getId()).get(), 4L);
             assertEquals(savedAccount.getLogin(), account.getLogin());
@@ -62,7 +62,7 @@ public class AccountRepositoryTest {
         Long id = 3L;
         Account account = new Account("Vasyin", "qwertyV", AccountStatus.ACTIVE, 4L);
         accountRepository.updateById(id, account);
-        Account updatedAccount = accountRepository.findById(id);
+        Account updatedAccount = accountRepository.findById(id).get();
         assertNotNull(updatedAccount);
         assertAll(() -> {
             assertEquals(Optional.of(updatedAccount.getId()).get(), 3L);
@@ -78,7 +78,7 @@ public class AccountRepositoryTest {
     public void test_deleteById() {
         Long id = 3L;
         accountRepository.deleteById(id);
-        Account delitedAccount = accountRepository.findById(id);
+        Account delitedAccount = accountRepository.findById(id).get();
         assertEquals(delitedAccount.getAccountStatus(), AccountStatus.DELETED);
     }
 
@@ -88,7 +88,7 @@ public class AccountRepositoryTest {
         Account account = new Account("Vasyin", "qwertyV", AccountStatus.ACTIVE, 4L);
         accountRepository.save(account);
         Long id = 4L;
-        Account savedAccount = accountRepository.findByClientId(id);
+        Account savedAccount = accountRepository.findByClientId(id).get();
         assertAll(() -> {
             assertEquals(Optional.of(savedAccount.getId()).get(), 4L);
             assertEquals(savedAccount.getLogin(), account.getLogin());

@@ -9,6 +9,10 @@ import java.util.List;
 public class AccountController {
     private final AccountService accountService;
 
+    public AccountController(AccountService accountService) {
+        this.accountService = accountService;
+    }
+
     //GET("/{id}")
     public Account findById(Long id){
         return accountService.findById(id);
@@ -36,7 +40,5 @@ public class AccountController {
 
 
 
-    public AccountController(AccountService accountService) {
-        this.accountService = accountService;
-    }
+
 }

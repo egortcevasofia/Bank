@@ -11,8 +11,8 @@ import java.util.List;
 import java.util.Optional;
 
 public class AccountServiceImpl implements AccountService {
-    private final AccountRepository accountRepository = new AccountRepositoryImpl();//TODO добавила инициализацию
-    private static final String ACCOUNT_ALREADY_EXISTS_MESSAGE = "Account with clientid %d already exists";
+    private final AccountRepository accountRepository = new AccountRepositoryImpl();
+    private static final String ACCOUNT_ALREADY_EXISTS_MESSAGE = "Account with clientId %d already exists";
     private static final String ACCOUNT_NOT_FOUND_MESSAGE = "Account with id %d not found";
 
 

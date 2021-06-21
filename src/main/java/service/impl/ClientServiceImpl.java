@@ -13,10 +13,10 @@ import java.util.List;
 import java.util.Optional;
 
 public class ClientServiceImpl implements ClientService {
-    private ClientRepository clientRepository = new ClientRepositoryImpl();
-    private AccountService accountService = new AccountServiceImpl();
-    private CardService cardService = new CardServiceImpl();
-    private BillService billService = new BillServiceImpl();
+    private final ClientRepository clientRepository = new ClientRepositoryImpl();
+    private final AccountService accountService = new AccountServiceImpl();
+    private final CardService cardService = new CardServiceImpl();
+    private final BillService billService = new BillServiceImpl();
     private static final String CLIENT_NOT_FOUND_MESSAGE = "Client with id %d not found";
     private static final String CLIENT_ALREADY_EXISTS_MESSAGE = "Client with first name %s and last name %s already exists";
     private static final String INSUFFICIENT_FUNDS_MESSAGE = "Client with id %d have doesn't enough money";

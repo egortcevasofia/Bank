@@ -10,7 +10,9 @@ import java.util.List;
 
 public class BankController {
     private final BankService bankService;
-
+    public BankController(BankService bankService) {
+        this.bankService = bankService;
+    }
 
 
     public Client createClient(Client client){
@@ -33,8 +35,5 @@ public class BankController {
     }
 
 
-    public BankController(BankService bankService) {
-        this.bankService = bankService;
-    }
 
 }

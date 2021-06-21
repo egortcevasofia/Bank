@@ -13,10 +13,9 @@ import java.util.Optional;
 
 
 public class AccountRepositoryImpl implements AccountRepository {
-    //mavenCentral -> postgres driver -> pom.xml -> <dependencies>...</dependencies>
     private static final String INSERT_QUERY = "INSERT INTO ACCOUNT(login, password, account_status, client_id) VALUES (?, ?, ?, ?)";
     private static final String SELECT_QUERY = "SELECT a.id, a.login, a.password, a.account_status, a.client_id FROM ACCOUNT a WHERE a.id = ?";
-    private static final String SELECTALL_QUERY = "SELECT * FROM ACCOUNT";
+    private static final String SELECT_ALL_QUERY = "SELECT * FROM ACCOUNT";
     private static final String UPDATE_QUERY = "UPDATE ACCOUNT SET login = ?, password = ?, account_status = ?, client_id = ? WHERE id = ?";
     private static final String DELETE_QUERY = "UPDATE ACCOUNT SET account_status = 'DELETED' WHERE id = ?";
     private static final String SELECT_BY_CLIENT_ID_QUERY = "SELECT a.id, a.login, a.password, a.account_status, a.client_id FROM ACCOUNT a WHERE a.client_id = ?";
@@ -105,9 +104,9 @@ public class AccountRepositoryImpl implements AccountRepository {
     @Override
     public List<Account> findAll() {
         getConnection();
-        List<Account> list = new ArrayList<Account>();
+        List<Account> list = new ArrayList<>();
         try {
-            preparedStatement = connection.prepareStatement(SELECTALL_QUERY);
+            preparedStatement = connection.prepareStatement(SELECT_ALL_QUERY);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 Long id = resultSet.getLong(1);

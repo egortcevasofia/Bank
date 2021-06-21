@@ -59,7 +59,7 @@ public class AccountServiceTest {
         assertThrows(AccountNotFoundException.class, () -> accountService.findByClientId(4L));
     }
 
-    @AfterEach
+   // @AfterEach
     public void cleanAfterTest() {
         accountRepository.dropTable();
     }

@@ -1,7 +1,6 @@
 package repository.impl;
 
 import entity.*;
-import exception.AccountNotFoundException;
 import repository.interfaces.ClientRepository;
 import utils.JdbcUtils;
 
@@ -97,7 +96,7 @@ public class ClientRepositoryImpl implements ClientRepository {
     @Override
     public List<Client> findAll() {
         getConnection();
-        List<Client> list = new ArrayList<Client>();
+        List<Client> list = new ArrayList<>();
         try {
             preparedStatement = connection.prepareStatement(SELECT_ALL_QUERY);
             ResultSet resultSet = preparedStatement.executeQuery();

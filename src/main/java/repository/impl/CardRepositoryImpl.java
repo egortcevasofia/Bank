@@ -100,11 +100,11 @@ public class CardRepositoryImpl implements CardRepository {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()) {
-                Long id = resultSet.getLong(1);
+                long id = resultSet.getLong(1);
                 Double balance = resultSet.getDouble(2);
                 TypeCard typeCard = toTypeCard(resultSet.getString(3));
                 Long clientId = resultSet.getLong(4);
-                Double changedBalance = balance + (amount);
+                double changedBalance = balance + (amount);
 
                 preparedStatement = connection.prepareStatement(UPDATE_QUERY);
                 preparedStatement.setDouble(1, changedBalance);

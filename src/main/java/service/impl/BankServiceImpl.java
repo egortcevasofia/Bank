@@ -1,6 +1,8 @@
 package service.impl;
 
 import entity.*;
+import repository.impl.BankRepositoryImpl;
+import repository.impl.BillRepositoryImpl;
 import repository.interfaces.BankRepository;
 import repository.interfaces.BillRepository;
 import service.interfaces.AccountService;
@@ -11,15 +13,14 @@ import service.interfaces.ClientService;
 import java.util.List;
 
 public class BankServiceImpl implements BankService {
-    private ClientService clientService;
-    private AccountService accountService;
-    private CardService cardService;
-    private BillRepository billRepository;
-    private BankRepository bankRepository;
+    private final ClientService clientService = new ClientServiceImpl();
+    private final AccountService accountService = new AccountServiceImpl();
+    private final CardService cardService = new CardServiceImpl();
+    private final BillRepository billRepository = new BillRepositoryImpl();
+    private final BankRepository bankRepository = new BankRepositoryImpl();
 
     @Override
     public Client createClient(Client client) {
-        bankRepository.save(client.getId());//todo так верно?
          return clientService.save(client);
     }
 
